@@ -3,14 +3,20 @@ from faicons import icon_svg
 
 from shiny import reactive
 from shiny.express import input, render, ui
-import palmerpenguins 
+import palmerpenguins
+import shinyswatch
 
 df = palmerpenguins.load_penguins()
 
-ui.page_opts(title="Penguins dashboard", fillable=True)
+ui.page_opts(
+    title="Penguins dashboard",
+    fillable=True,
+    theme=shinyswatch.theme.flatly()
+)
 
-
-with ui.sidebar(title="Filter controls"):
+with ui.sidebar():
+    ui.h4("Filter controls")
+    ui.hr(style="border-top: 4px solid #2c0735; margin-top: 2px;")
     ui.input_slider("mass", "Mass", 2000, 6000, 6000)
     ui.input_checkbox_group(
         "species",
@@ -18,7 +24,7 @@ with ui.sidebar(title="Filter controls"):
         ["Adelie", "Gentoo", "Chinstrap"],
         selected=["Adelie", "Gentoo", "Chinstrap"],
     )
-    ui.hr()
+    ui.hr(style="border-top: 4px solid #2c0735;")
     ui.h6("Links")
     ui.a(
         "GitHub Source",
@@ -49,21 +55,30 @@ with ui.sidebar(title="Filter controls"):
 
 
 with ui.layout_column_wrap(fill=False):
-    with ui.value_box(showcase=icon_svg("earlybirds")):
+    with ui.value_box(
+        showcase=icon_svg("earlybirds"),
+        theme="bg-gradient-blue-purple"
+        ):
         "Number of penguins"
 
         @render.text
         def count():
             return filtered_df().shape[0]
 
-    with ui.value_box(showcase=icon_svg("ruler-horizontal")):
+    with ui.value_box(
+        showcase=icon_svg("ruler-horizontal"),
+        theme="bg-gradient-blue-purple"
+        ):
         "Average bill length"
 
         @render.text
         def bill_length():
             return f"{filtered_df()['bill_length_mm'].mean():.1f} mm"
 
-    with ui.value_box(showcase=icon_svg("ruler-vertical")):
+    with ui.value_box(
+        showcase=icon_svg("ruler-vertical"),
+        theme="bg-gradient-blue-purple"
+        ):
         "Average bill depth"
 
         @render.text
@@ -82,6 +97,7 @@ with ui.layout_columns():
                 x="bill_length_mm",
                 y="bill_depth_mm",
                 hue="species",
+                palette={"Adelie": "#858ae3", "Gentoo": "#83c5be", "Chinstrap": "#023e8a"}  # Custom colors
             )
 
     with ui.card(full_screen=True):
